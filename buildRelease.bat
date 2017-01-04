@@ -48,3 +48,12 @@ IF EXIST %FILE% del /F %FILE%
 %ZIP% a -tzip %FILE% GameData
 
 pause
+
+type GameData\ShipSections\ShipSections.version
+set /p VERSION= "Enter version: "
+
+
+set FILE="%RELEASEDIR%\ShipSections-%VERSION%.zip"
+IF EXIST %FILE% del /F %FILE%
+%ZIP% a -tzip %FILE% GameData/ShipSections
+pause
