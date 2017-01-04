@@ -128,23 +128,15 @@ namespace KSPPluginFramework
             get { return _Visible; }
             set
             {
-                if (_Visible != value)
-                {
-                    if (value)
-                    {
-                        LogFormatted_DebugOnly("Adding Window to PostDrawQueue-{0}", WindowID);
-                        RenderingManager.AddToPostDrawQueue(5, this.DrawGUI);
-                    }
-                    else
-                    {
-                        LogFormatted_DebugOnly("Removing Window from PostDrawQueue", WindowID);
-                        RenderingManager.RemoveFromPostDrawQueue(5, this.DrawGUI);
-                    }
-                }
                 _Visible = value;
             }
         }
 
+        private void OnGUI()
+        {
+            if (Visible)
+                DrawGUI();
+        }
         /// <summary>
         /// This is the Code that draws the window and sets the skin
         /// !!!! You have to set the skin before drawing the window or you will scratch your head for ever

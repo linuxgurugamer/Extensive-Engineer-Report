@@ -23,7 +23,7 @@ namespace JKorTech.Extensive_Engineer_Report
 
         protected internal override bool IsApplicable(IEnumerable<Part> sectionParts)
         {
-            return sectionParts.SelectMany(part => part.FindModulesImplementing<ModuleDeployableSolarPanel>()).All(panel => panel.sunTracking)
+            return sectionParts.SelectMany(part => part.FindModulesImplementing<ModuleDeployableSolarPanel>()).All(panel => panel.isTracking)
                  && sectionParts.AnyHasModule<ModuleDeployableSolarPanel>();
         }
 
@@ -31,13 +31,13 @@ namespace JKorTech.Extensive_Engineer_Report
         {
             if (sectionParts.AnyHasModule<ModuleGenerator>()) return true;
             var solarPanels = sectionParts.SelectMany(part => part.FindModulesImplementing<ModuleDeployableSolarPanel>());
-            if (solarPanels.Any(panel => !panel.sunTracking)) return true;
+            if (solarPanels.Any(panel => !panel.isTracking)) return true;
             return false;
         }
 
         public override List<Part> GetAffectedParts(IEnumerable<Part> sectionParts)
         {
-            return sectionParts.Where(part => part.FindModulesImplementing<ModuleDeployableSolarPanel>().Any(panel => panel.sunTracking)).ToList();
+            return sectionParts.Where(part => part.FindModulesImplementing<ModuleDeployableSolarPanel>().Any(panel => panel.isTracking)).ToList();
         }
     }
 }

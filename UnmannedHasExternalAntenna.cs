@@ -2,6 +2,7 @@
 using PreFlightTests;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace JKorTech.Extensive_Engineer_Report
 {
@@ -21,6 +22,8 @@ namespace JKorTech.Extensive_Engineer_Report
         {
             return DesignConcernSeverity.CRITICAL;
         }
+        
+        protected internal override bool IsApplicable(IEnumerable<Part> sectionParts) => GetAffectedParts(sectionParts).Any();
 
         public override bool TestCondition(IEnumerable<Part> sectionParts)
         {
@@ -31,9 +34,12 @@ namespace JKorTech.Extensive_Engineer_Report
 
         public override List<Part> GetAffectedParts(IEnumerable<Part> sectionParts)
         {
+            if (sectionParts == null || sectionParts.Count() == 0 || (ShipConstruction.ShipManifest != null && ShipConstruction.ShipManifest.HasAnyCrew()))
+                return new List<Part>();
+
             return sectionParts.Where(part => {
                 var commandModule = part.FindModuleImplementing<ModuleCommand>();
-                return commandModule != null && (commandModule.minimumCrew == 0 || !ShipConstruction.ShipManifest.HasAnyCrew());
+                return commandModule != null && commandModule.minimumCrew == 0;
                 }).ToList();
         }
 

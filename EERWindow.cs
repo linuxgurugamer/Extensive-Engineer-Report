@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.UI.Screens;
 using static JKorTech.Extensive_Engineer_Report.ConcernUtils;
 using static JKorTech.Extensive_Engineer_Report.KSPExtensions;
 
@@ -15,10 +16,10 @@ namespace JKorTech.Extensive_Engineer_Report
         private const int WindowWidth = 400, WindowHeight = 600;
         private ApplicationLauncherButton button;
         private Vector2 scrollPos;
-        private static readonly string TestsPassingIconLocation = "ExtensiveEngineerReport/TestPass";
+        private static readonly string TestsPassingIconLocation = "ExtensiveEngineerReport/Textures/TestPass";
         private Texture TestsPassingIcon;
         private Texture TestsFailIcon;
-        private static readonly string TestsFailIconLocation = "ExtensiveEngineerReport/TestFail";
+        private static readonly string TestsFailIconLocation = "ExtensiveEngineerReport/Textures/TestFail";
         private GUIStyle passStyle;
         private GUIStyle failStyle;
         private GUIStyle descriptionStyle;
@@ -41,15 +42,21 @@ namespace JKorTech.Extensive_Engineer_Report
         internal override void Update()
         {
             base.Update();
+            if (ConcernRunner.Instance == null)
+                return;
             if (ConcernRunner.Instance.TestsPass)
             {
-                button.SetTexture(TestsPassingIcon);
-                EditorLogic.fetch.launchBtn.SetColor(Color.green);
+                if (button != null && TestsPassingIcon != null)
+                    button.SetTexture(TestsPassingIcon);
+                //EditorLogic.fetch.launchBtn.SetColor(Color.green);
+                EditorLogic.fetch.launchBtn.image.color = Color.green;
             }
             else
             {
-                button.SetTexture(TestsFailIcon);
-                EditorLogic.fetch.launchBtn.SetColor(Color.red);
+                if (button != null && TestsFailIcon != null)
+                    button.SetTexture(TestsFailIcon);
+                //EditorLogic.fetch.launchBtn.SetColor(Color.red);
+                EditorLogic.fetch.launchBtn.image.color = Color.red;
             }
         }
 
@@ -75,10 +82,13 @@ namespace JKorTech.Extensive_Engineer_Report
         internal override void OnDestroy()
         {
             ApplicationLauncher.Instance.RemoveModApplication(button);
+            GameEvents.onGUIApplicationLauncherReady.Remove(OnAppLauncherReady);
+            Visible = false;
         }
 
         internal override void DrawWindow(int id)
         {
+
             if (!stylesInit)
             {
                 InitStyles();
@@ -86,7 +96,9 @@ namespace JKorTech.Extensive_Engineer_Report
             }
             using (new GuiLayout(GuiLayout.Method.Horizontal))
             {
-                var settings = GetScenarioModules<GeneralSettings>().First();
+                var settings = GetScenarioModules<GeneralSettings>().FirstOrDefault();
+                if (settings == null)
+                    return;
                 GUILayout.Label("Enabled Test Severity");
                 var old = settings.critical;
                 settings.critical = GUILayout.Toggle(settings.critical, "Critical", KSPPluginFramework.SkinsLibrary.CurrentSkin.button);
@@ -98,18 +110,22 @@ namespace JKorTech.Extensive_Engineer_Report
                 settings.notice = GUILayout.Toggle(settings.notice, "Notice", KSPPluginFramework.SkinsLibrary.CurrentSkin.button);
                 if (old != settings.notice) ConcernRunner.Instance.RunTests();
             }
+            
             using (new GuiLayout(GuiLayout.Method.ScrollView, ref scrollPos))
             {
                 GUILayout.Label("Ship-Wide Tests");
-                foreach (var test in ConcernLoader.ShipDesignConcerns.Where(test => InCorrectFacility(test) && test.IsApplicable()))
-                {
-                    var passed = ConcernRunner.Instance.ShipConcerns[test];
-                    GUILayout.Toggle(true, test.GetConcernTitle(), passed ? passStyle : failStyle);
-                    if (!passed)
+                
+                // Needed to add check for the count since apparently if a dictinary is empty, accessing it will cause an error
+                if (ConcernRunner.Instance.ShipConcerns.Count > 0)
+                    foreach (var test in ConcernLoader.ShipDesignConcerns.Where(test => InCorrectFacility(test) && test.IsApplicable()))
                     {
-                        GUILayout.Label(test.GetConcernDescription(), descriptionStyle);
+                        var passed = ConcernRunner.Instance.ShipConcerns[test];
+                        GUILayout.Toggle(true, test.GetConcernTitle(), passed ? passStyle : failStyle);
+                        if (!passed)
+                        {
+                            GUILayout.Label(test.GetConcernDescription(), descriptionStyle);
+                        }
                     }
-                }
                 GUILayout.Label("Section-Specific Tests");
                 foreach (var section in ShipSections.API.PartsBySection)
                 {

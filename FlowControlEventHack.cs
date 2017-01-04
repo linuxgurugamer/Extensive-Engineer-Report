@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace JKorTech.Extensive_Engineer_Report
 {
@@ -41,7 +42,7 @@ namespace JKorTech.Extensive_Engineer_Report
 
         private class EventHandler : MonoBehaviour
         {
-            private void FireEvent(object val)
+            private void FireEvent()
             {
                 StartCoroutine(DelayFire());
             }
@@ -56,12 +57,12 @@ namespace JKorTech.Extensive_Engineer_Report
             public void Awake()
             {
                 var editor = gameObject.GetComponent<UIPartActionResourceEditor>();
-                editor.flowBtn.AddValueChangedDelegate(FireEvent);
+                editor.flowBtn.onToggle.AddListener(new UnityAction(FireEvent));
             }
             public void OnDestroy()
             {
                 var editor = gameObject.GetComponent<UIPartActionResourceEditor>();
-                editor?.flowBtn?.RemoveValueChangedDelegate(FireEvent);
+                editor.flowBtn.onToggle.AddListener(new UnityAction(this.FireEvent));
             }
         }
     }

@@ -21,8 +21,8 @@ namespace JKorTech.Extensive_Engineer_Report
         }
 
         protected internal override bool IsApplicable(IEnumerable<Part> sectionParts) =>
-            sectionParts.AnyHasModule<ModuleLandingLeg>() || sectionParts.AnyHasModule<ModuleLandingGear>()
-                                 || sectionParts.AnyHasModule<ModuleLandingGearFixed>();
+            sectionParts.AnyHasModule<ModuleWheelBase>() || sectionParts.AnyHasModule<ModuleWheelBase>();
+                                 // || sectionParts.AnyHasModule<ModuleLandingGearFixed>();
 
         public override bool TestCondition(IEnumerable<Part> sectionParts) => sectionParts.AnyHasModule<ModuleLight>();
     }

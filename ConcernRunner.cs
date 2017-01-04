@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using static JKorTech.Extensive_Engineer_Report.KSPExtensions;
+using KSP.UI.Screens;
 
 namespace JKorTech.Extensive_Engineer_Report
 {
@@ -51,9 +52,9 @@ namespace JKorTech.Extensive_Engineer_Report
             RunTests();
         }
 
-        private void OnLoad(ShipConstruct data0, CraftBrowser.LoadType data1)
+        private void OnLoad(ShipConstruct data0, CraftBrowserDialog.LoadType data1)
         {
-            if(data1 == CraftBrowser.LoadType.Normal)
+            if(data1 == CraftBrowserDialog.LoadType.Normal)
             {
                 ShipConcerns.Clear();
                 SectionConcerns.Clear();

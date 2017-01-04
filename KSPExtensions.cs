@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace JKorTech.Extensive_Engineer_Report
 {
@@ -29,14 +30,28 @@ namespace JKorTech.Extensive_Engineer_Report
 
         public static IDictionary<ProtoCrewMember, Part> CrewInSection(IEnumerable<Part> sectionParts)
         {
-            return ShipConstruction.ShipManifest.GetAllCrew(false)
-                .Select(crew => new KeyValuePair<ProtoCrewMember, Part>(crew, ShipConstruction.FindPartWithCraftID(ShipConstruction.ShipManifest.GetPartForCrew(crew).PartID)))
-                .Where(pair => sectionParts.Contains(pair.Value)).ToDictionary(pair => pair.Key, pair => pair.Value);
+            if (ShipConstruction.ShipManifest == null || ShipConstruction.ShipManifest.PartManifests == null || sectionParts == null)
+                return new Dictionary<ProtoCrewMember, Part>();
+
+            return ShipConstruction.ShipManifest.GetAllCrew(false).Where(crew => crew != null)
+               .Select(crew => new KeyValuePair<ProtoCrewMember, Part>(crew, ShipConstruction.FindPartWithCraftID(ShipConstruction.ShipManifest.GetPartForCrew(crew).PartID)))
+               .Where(pair => sectionParts.Contains(pair.Value)).ToDictionary(pair => pair.Key, pair => pair.Value);
+
         }
 
         public static bool IsProbeControlled(this IEnumerable<Part> sectionParts)
         {
-            return sectionParts.AnyHasModule<ModuleCommand>() && !CrewInSection(sectionParts).Any(pair => pair.Value.HasModule<ModuleCommand>());
+            int antennaCnt = 0;
+            foreach (var part in sectionParts)
+            {
+                var allpartmodules = part.FindModulesImplementing<ModuleDataTransmitter>();
+                var datatransmittermodules = allpartmodules.OfType<ModuleDataTransmitter>().Where(p => p.antennaType != AntennaType.INTERNAL);
+                antennaCnt += datatransmittermodules.Count();
+            }
+            
+            return antennaCnt > 0 && !CrewInSection(sectionParts).Any(pair => pair.Value.HasModule<ModuleCommand>());
+        //    return sectionParts.AnyHasModule<ModuleDeployableAntenna>() && !CrewInSection(sectionParts).Any(pair => pair.Value.HasModule<ModuleCommand>());
+
         }
 
         public static IEnumerable<T> GetScenarioModules<T>()

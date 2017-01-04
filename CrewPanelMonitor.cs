@@ -27,7 +27,7 @@ namespace JKorTech.Extensive_Engineer_Report
         private EditorScreen currentScreen;
         private DateTime lastUpdate;
         private List<ProtoCrewMember> lastAssignedCrew;
-        private Coroutine updateCoroutine; 
+        private Coroutine updateCoroutine = null; 
 
         /// <summary>
         /// Start the monitor.
@@ -38,7 +38,7 @@ namespace JKorTech.Extensive_Engineer_Report
             lastUpdate = DateTime.Now;
             lastAssignedCrew = GetCurrentlyAssignedCrew();
             GameEvents.onEditorScreenChange.Add(OnEditorScreenChange);
-            GameEvents.onGameSceneSwitchRequested.Add(OnGameSceneSwitch);
+           // GameEvents.onGameSceneSwitchRequested.Add(OnGameSceneSwitch);
         }
 
         /// <summary>
@@ -88,25 +88,22 @@ namespace JKorTech.Extensive_Engineer_Report
             if (isStarting) OnStart();
         }
 
-        /// <summary>
-        /// Here when the game scene switches.
-        /// </summary>
-        /// <param name="action"></param>
-        private void OnGameSceneSwitch(GameEvents.FromToAction<GameScenes, GameScenes> action)
+        private void OnDestroy()
         {
-            if (action.from != GameScenes.EDITOR) return;
-            bool isStopping = (currentScreen == EditorScreen.Crew);
-            currentScreen = EditorScreen.Parts;
-            if (isStopping) OnStop();
+            if (updateCoroutine != null) OnStop();
+            
+            GameEvents.onEditorScreenChange.Remove(OnEditorScreenChange);
         }
-
         /// <summary>
         /// Here when entering the crew panel.
         /// </summary>
         private void OnStart()
         {
-            lastAssignedCrew = GetCurrentlyAssignedCrew();
-            updateCoroutine = StartCoroutine(UpdateTick());
+            if (updateCoroutine == null)
+            {
+                lastAssignedCrew = GetCurrentlyAssignedCrew();
+                updateCoroutine = StartCoroutine(UpdateTick());
+            }
         }
 
         private IEnumerator UpdateTick()
@@ -125,6 +122,7 @@ namespace JKorTech.Extensive_Engineer_Report
         {
             lastAssignedCrew = null;
             StopCoroutine(updateCoroutine);
+            updateCoroutine = null;
         }
 
         /// <summary>
@@ -229,7 +227,7 @@ namespace JKorTech.Extensive_Engineer_Report
                 // the CMAssignmentDialog class to me when I asked about it in the mod development
                 // forum. I never in a thousand years would have found this cryptically-named
                 // class on my own.
-                return (CMAssignmentDialog.Instance == null) ? null : CMAssignmentDialog.Instance.GetManifest();
+                return (KSP.UI.CrewAssignmentDialog.Instance == null) ? null : KSP.UI.CrewAssignmentDialog.Instance.GetManifest();
             }
         }
     }
