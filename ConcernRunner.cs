@@ -99,6 +99,7 @@ namespace JKorTech.Extensive_Engineer_Report
                 {
                     SectionConcerns.Add(section, new Dictionary<SectionDesignConcernBase, bool>());
                 }
+
                 var data = ShipSections.API.GetSectionDataForMod<ConcernData>(section);
                 foreach (var concern in ConcernLoader.SectionDesignConcerns.Where(concern => !data.disabledConcerns.Contains(concern.GetType().Name)))
                 {
