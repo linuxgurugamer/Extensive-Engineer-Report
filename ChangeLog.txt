@@ -1,2 +1,3 @@
 0.0.1	Initial release
 0.0.2	Updated TagModules for RT & stock antennas
+0.0.3	Changed initialName to be initialized as "none" rather than an empty string
