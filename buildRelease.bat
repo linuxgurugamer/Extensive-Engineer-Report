@@ -1,46 +1,44 @@
 
-copy bin\Release\ExtensiveEngineerReport.dll ..\GameData\ExtensiveEngineerReport\Plugins
-copy ExtensiveEngineerReport.cfg ..\GameData\ExtensiveEngineerReport\ModuleManager
-copy TagModules\TagModules.cfg ..\GameData\ExtensiveEngineerReport\ModuleManager
-copy LICENSE.txt ..\GameData\ExtensiveEngineerReport
-copy README.md ..\GameData\ExtensiveEngineerReport
+copy Extensive-Engineer-Report\bin\Release\ExtensiveEngineerReport.dll GameData\ExtensiveEngineerReport\Plugins
+copy ExtensiveEngineerReport.cfg GameData\ExtensiveEngineerReport\ModuleManager
+copy Extensive-Engineer-Report\TagModules\TagModules.cfg GameData\ExtensiveEngineerReport\ModuleManager
+copy LICENSE.txt GameData\ExtensiveEngineerReport
+copy README.md .GameData\ExtensiveEngineerReport
 
-copy ExtensiveEngineerReport.version ..\GameData\ExtensiveEngineerReport
+copy ExtensiveEngineerReport.version GameData\ExtensiveEngineerReport
 
-copy ..\ShipSections\ShipSections\bin\Release\ShipSections\ShipSections.dll ..\GameData\ShipSections\Plugins
+copy ShipSections\ShipSections\bin\Release\ShipSections\ShipSections.dll GameData\ShipSections\Plugins
 
-copy ..\ShipSections\ShipSections\ShipSections.cfg ..\GameData\ShipSections\ModuleManager
-copy ..\ShipSections\ShipSections\ShipSections.png ..\GameData\ShipSections\Textures
+copy ShipSections\ShipSections\ShipSections.cfg GameData\ShipSections\ModuleManager
+copy ShipSections\ShipSections\ShipSections.png GameData\ShipSections\Textures
 
-copy ..\ShipSections\ShipSections.version ..\GameData\ShipSections\
+copy ShipSections.version GameData\ShipSections\
 
-cd ..
-copy ..\ModuleManager*.dll GameData
-
-set DEFHOMEDRIVE=d:
-set DEFHOMEDIR=%DEFHOMEDRIVE%%HOMEPATH%
-set HOMEDIR=
-set HOMEDRIVE=%CD:~0,2%
+copy ModuleManager*.dll GameData
 
 set RELEASEDIR=d:\Users\jbb\release
 set ZIP="c:\Program Files\7-zip\7z.exe"
-echo Default homedir: %DEFHOMEDIR%
 
-rem set /p HOMEDIR= "Enter Home directory, or <CR> for default: "
+copy GameData\ExtensiveEngineerReport\ExtensiveEngineerReport.version a.version
+set VERSIONFILE=a.version
+rem The following requires the JQ program, available here: https://stedolan.github.io/jq/download/
+c:\local\jq-win64  ".VERSION.MAJOR" %VERSIONFILE% >tmpfile
+set /P major=<tmpfile
 
-if "%HOMEDIR%" == "" (
-set HOMEDIR=%DEFHOMEDIR%
-) 
-echo %HOMEDIR%
+c:\local\jq-win64  ".VERSION.MINOR"  %VERSIONFILE% >tmpfile
+set /P minor=<tmpfile
 
-SET _test=%HOMEDIR:~1,1%
-if "%_test%" == ":" (
-set HOMEDRIVE=%HOMEDIR:~0,2%
-)
+c:\local\jq-win64  ".VERSION.PATCH"  %VERSIONFILE% >tmpfile
+set /P patch=<tmpfile
 
+c:\local\jq-win64  ".VERSION.BUILD"  %VERSIONFILE% >tmpfile
+set /P build=<tmpfile
+del tmpfile
+set VERSION=%major%.%minor%.%patch%
+if "%build%" NEQ "0"  set VERSION=%VERSION%.%build%
 
-type GameData\ExtensiveEngineerReport\ExtensiveEngineerReport.version
-set /p VERSION= "Enter version: "
+echo Version:  %VERSION%
+del a.version
 
 
 set FILE="%RELEASEDIR%\ExtensiveEngineerReport-%VERSION%.zip"
@@ -48,9 +46,6 @@ IF EXIST %FILE% del /F %FILE%
 %ZIP% a -tzip %FILE% GameData
 
 pause
-
-type GameData\ShipSections\ShipSections.version
-set /p VERSION= "Enter version: "
 
 
 set FILE="%RELEASEDIR%\ShipSections-%VERSION%.zip"
