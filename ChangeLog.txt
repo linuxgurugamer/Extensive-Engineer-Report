@@ -6,3 +6,8 @@
 	Updated for 1.3
 	Added check for null vessel in SmartRename.OnAwake
 	Disabled ShipSections window which displays data (nothing to display)
+
+0.1.1
+	Added some checks to prevent null refs
+	Removed some log spam
+	Changed .version files to look at github 
