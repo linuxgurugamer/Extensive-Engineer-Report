@@ -14,5 +14,5 @@ copy ShipSections\ShipSections\ShipSections.cfg GameData\ShipSections\ModuleMana
 copy ShipSections\ShipSections\ShipSections.png GameData\ShipSections\Textures
 
 cd GameData
-xcopy /s /y ExtensiveEngineerReport R:\KSP_1.3.0_dev\GameData\ExtensiveEngineerReport
-xcopy /s /y ShipSections R:\KSP_1.3.0_dev\GameData\ShipSections
+xcopy /s /y /i ExtensiveEngineerReport R:\KSP_1.3.1_dev\GameData\ExtensiveEngineerReport
+xcopy /s /y /i ShipSections R:\KSP_1.3.1_dev\GameData\ShipSections

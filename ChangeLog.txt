@@ -11,3 +11,6 @@
 	Added some checks to prevent null refs
 	Removed some log spam
 	Changed .version files to look at github 
+
+0.1.2
+	Updated for 1.3.1

@@ -12,8 +12,9 @@ copy ShipSections\ShipSections\bin\Release\ShipSections\ShipSections.dll GameDat
 copy ShipSections\ShipSections\ShipSections.cfg GameData\ShipSections\ModuleManager
 copy ShipSections\ShipSections\ShipSections.png GameData\ShipSections\Textures
 
-copy ShipSections.version GameData\ShipSections\
 
+copy ShipSections.version GameData\ShipSections\
+pause
 copy ModuleManager*.dll GameData
 
 set RELEASEDIR=d:\Users\jbb\release
