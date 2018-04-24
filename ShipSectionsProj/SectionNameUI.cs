@@ -20,7 +20,7 @@ namespace JKorTech.ShipSections
         {
             if (API.AnyCurrentVesel)
             {
-                DrawSectionWindow(); 
+                DrawSectionWindow();
             }
             else
             {
@@ -28,8 +28,82 @@ namespace JKorTech.ShipSections
             }
         }
 
+        const string UNKNOWN_SECTION = "Unknown Section";
+        const string SECTION_PREFIX = "Stage Section ";
+        const string UNSTAGED_SECTION = "Unstaged Section ";
+        const string MERGED_SECTION = "Merged Section";
+        void SectionByDecouplers()
+        {
+            foreach (var s in API.CurrentVesselParts)
+            {
+                var sectionInfo = s.FindModuleImplementing<SectionInfo>();
+                string sectionName = UNKNOWN_SECTION;
+                API.ChangeSectionName(sectionInfo.section, sectionName);
+            }
+            foreach (var s in API.CurrentVesselParts)
+            {
+                var sectionSplitter = s.FindModuleImplementing<SectionSplitter>();
+                if (sectionSplitter != null)
+                {
+                    string sectionName = SECTION_PREFIX + s.inverseStage.ToString();
+                    bool cancel = false;
+                    if (sectionSplitter.section.Substring(0, SECTION_PREFIX.Length) == SECTION_PREFIX)
+                    {
+                        string number = sectionSplitter.section.Substring(SECTION_PREFIX.Length);
+                        int result = -2;
+                        int.TryParse(number, out result);
+                        if (result > s.inverseStage)
+                            cancel = true;
+                    }
+                    if (!cancel)
+                    {
+                        SectionSplitter.SetNewSection(s, sectionSplitter.section, sectionName);
+                        sectionSplitter.InitializeAsNewSection();
+                        sectionSplitter.isSectionRoot = true;
+                        foreach (var symmetryPart in s.symmetryCounterparts)
+                        {
+                            SectionSplitter.SetNewSection(symmetryPart, symmetryPart.FindModuleImplementing<SectionInfo>().section, sectionSplitter.section);
+                        }
+                        API.NewSectionCreated.Fire(sectionSplitter.section);
+                    }
+                }
+                else
+                {
+                    var sectionInfo = s.FindModuleImplementing<SectionInfo>();
+                    if (sectionInfo.section == UNKNOWN_SECTION)
+                    {
+                        string sectionName = UNSTAGED_SECTION;
+                        API.ChangeSectionName(sectionInfo.section, sectionName);
+                    }
+                }
+            }
+        }
+
+        void MergeAllSections()
+        {
+            foreach (var s in API.CurrentVesselParts)
+            {
+                var sectionInfo = s.FindModuleImplementing<SectionInfo>();
+                string sectionName = MERGED_SECTION;
+                API.ChangeSectionName(sectionInfo.section, sectionName);
+            }
+        }
+
         private void DrawSectionWindow()
         {
+
+            using (new GuiLayout(GuiLayout.Method.Vertical))
+            using (new GuiLayout(GuiLayout.Method.Horizontal))
+            {
+                if (GUILayout.Button("ReSection by stages", GUILayout.ExpandWidth(true)))
+                {
+                    SectionByDecouplers();
+                }
+                if (GUILayout.Button("Merge All Sections", GUILayout.ExpandWidth(true)))
+                {
+                    MergeAllSections();
+                }
+            }
             using (new GuiLayout(GuiLayout.Method.Vertical))
             using (new GuiLayout(GuiLayout.Method.ScrollView, ref scrollPos))
             {
@@ -38,12 +112,12 @@ namespace JKorTech.ShipSections
                 {
                     using (new GuiLayout(GuiLayout.Method.Horizontal))
                     {
-                        GUILayout.Label(section);
+                        GUILayout.Label(section, GUILayout.Width(200));
                         if (sectionBeingRenamed == null && GUILayout.Button("Rename", GUILayout.ExpandWidth(true)))
                         {
                             newNameInProgress = sectionBeingRenamed = section;
                         }
-                        else if(sectionBeingRenamed == section)
+                        else if (sectionBeingRenamed == section)
                         {
                             newNameInProgress = GUILayout.TextField(newNameInProgress);
                             if (!string.IsNullOrEmpty(newNameInProgress) && GUILayout.Button("Save", GUILayout.ExpandWidth(false)))
@@ -52,7 +126,7 @@ namespace JKorTech.ShipSections
                             }
                         }
                         bool currentlyHighlighted = currentlyHighlightedSection == section;
-                        if (GUILayout.Button(currentlyHighlighted ? "Unighlight": "Highlight", GUILayout.ExpandWidth(false)))
+                        if (GUILayout.Button(currentlyHighlighted ? "Unhighlight" : "Highlight", GUILayout.ExpandWidth(false)))
                         {
                             if (currentlyHighlighted)
                             {

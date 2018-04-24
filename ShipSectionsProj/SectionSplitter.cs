@@ -35,7 +35,7 @@ namespace JKorTech.ShipSections
             return NewSectionPrefix + (lastIndex + 1);
         }
 
-        private static void SetNewSection(Part part, string oldSectionName, string newSectionName)
+        internal static void SetNewSection(Part part, string oldSectionName, string newSectionName)
         {
             var section = part.FindModuleImplementing<SectionInfo>();
             if(section?.section == oldSectionName)
