@@ -1,20 +1,18 @@
 
-@echo off
 
-rem H is the destination game folder
-rem GAMEDIR is the name of the mod folder (usually the mod name)
-rem GAMEDATA is the name of the local GameData
-rem VERSIONFILE is the name of the version file, usually the same as GAMEDATA,
-rem    but not always
+copy Extensive-Engineer-Report\bin\Debug\ExtensiveEngineerReport.dll GameData\ExtensiveEngineerReport\Plugins
+copy ExtensiveEngineerReport.cfg GameData\ExtensiveEngineerReport\ModuleManager
+copy Extensive-Engineer-Report\TagModules\TagModules.cfg GameData\ExtensiveEngineerReport\ModuleManager
+copy LICENSE.txt GameData\ExtensiveEngineerReport
+copy README.md GameData\ExtensiveEngineerReport
 
-set H=R:\KSP_1.4.1_dev
-set GAMEDIR=ExtensiveEngineerReport
-set GAMEDATA="GameData\"
-set VERSIONFILE=%GAMEDIR%.version
 
-copy /Y "%1%2" "%GAMEDATA%\%GAMEDIR%\Plugins"
-copy /Y %VERSIONFILE% %GAMEDATA%\%GAMEDIR%
 
-xcopy /y /s /I %GAMEDATA%\%GAMEDIR% "%H%\GameData\%GAMEDIR%"
+copy ShipSections\ShipSections\bin\Debug\ShipSections\ShipSections.dll GameData\ShipSections\Plugins
 
-pause
+copy ShipSections\ShipSections\ShipSections.cfg GameData\ShipSections\ModuleManager
+copy ShipSections\ShipSections\ShipSections.png GameData\ShipSections\Textures
+
+cd GameData
+xcopy /s /y /i ExtensiveEngineerReport R:\KSP_1.3.1_dev\GameData\ExtensiveEngineerReport
+xcopy /s /y /i ShipSections R:\KSP_1.3.1_dev\GameData\ShipSections

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2005
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensiveEngineerReport", "Extensiv-EngineerReport\ExtensiveEngineerReport.csproj", "{0E8C219B-645B-457B-8E9F-EA274D4BC88E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensive Engineer Report", "Extensive-Engineer-Report\Extensive Engineer Report.csproj", "{0E8C219B-645B-457B-8E9F-EA274D4BC88E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9C0C93C1-C018-4A3F-89A8-FD677730787C} = {9C0C93C1-C018-4A3F-89A8-FD677730787C}
 	EndProjectSection
@@ -15,7 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		deploy.bat = deploy.bat
 		ExtensiveEngineerReport.cfg = ExtensiveEngineerReport.cfg
 		ExtensiveEngineerReport.version = ExtensiveEngineerReport.version
-		jenkins.txt = jenkins.txt
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 		ShipSections.version = ShipSections.version
@@ -40,8 +39,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {A8AF2E2B-146B-4C2C-B453-1EA18AADC0A6}
 	EndGlobalSection
 EndGlobal
