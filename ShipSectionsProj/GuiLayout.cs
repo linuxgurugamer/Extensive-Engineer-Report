@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if true
+using System;
 using UnityEngine;
 
 namespace JKorTech.ShipSections
@@ -74,3 +75,4 @@ namespace JKorTech.ShipSections
         }
     }
 }
+#endif

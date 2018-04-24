@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿#if true
+using System.Linq;
 using UnityEngine;
 using KSP.UI.Screens;
 
@@ -9,7 +10,7 @@ namespace JKorTech.ShipSections
     {
         private const int WindowWidth = 400, WindowHeight = 600;
 
-        private readonly string AppLauncherIconLocation = "ShipSections/ShipSections";
+        private readonly string AppLauncherIconLocation = "ExtensiveEngineerReport/Textures/ShipSections";
 
         private string sectionBeingRenamed;
         private string newNameInProgress = string.Empty;
@@ -81,6 +82,8 @@ namespace JKorTech.ShipSections
         internal override void Start()
         {
             DragEnabled = true;
+
+
             WindowRect.Set((Screen.width - WindowWidth) / 4, (Screen.height - WindowHeight) / 2, WindowWidth, WindowHeight);
             WindowCaption = nameof(ShipSections);
             if (ApplicationLauncher.Instance != null && ApplicationLauncher.Ready)
@@ -114,6 +117,8 @@ namespace JKorTech.ShipSections
         {
             ApplicationLauncher.Instance.RemoveModApplication(button);
             GameEvents.onGUIApplicationLauncherReady.Remove(OnAppLauncherReady);
+
         }
     }
 }
+#endif
