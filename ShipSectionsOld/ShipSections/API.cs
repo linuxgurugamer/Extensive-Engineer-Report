@@ -1,0 +1,137 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace JKorTech.ShipSections
+{
+    public static class API
+    {
+        public static IEnumerable<Part> CurrentVesselParts
+        {
+            get
+            {
+                if (HighLogic.LoadedSceneIsEditor)
+                {
+                    return EditorLogic.fetch.ship.Parts;
+                }
+                else if (HighLogic.LoadedSceneIsFlight)
+                {
+                    return FlightGlobals.ActiveVessel.Parts;
+                }
+                else
+                {
+                    return Enumerable.Empty<Part>();
+                }
+            }
+        }
+
+        public static bool AnyCurrentVesel
+        {
+            get
+            {
+                if (HighLogic.LoadedSceneIsEditor)
+                    return EditorLogic.fetch.ship?.Any() ?? false;
+                else if (HighLogic.LoadedSceneIsFlight)
+                    return FlightGlobals.ActiveVessel != null;
+                else
+                    return false;
+            }
+        }
+
+        public static void ChangeSectionName(string currentSectionName, string newSectionName)
+        {
+            if (currentSectionName == newSectionName) return;
+            if (SectionNames.Contains(newSectionName))
+                MergeSections(currentSectionName, newSectionName);
+            else
+                RenameSection(currentSectionName, newSectionName);
+        }
+
+        private static void MergeSections(string currentSection, string newSection)
+        {
+            var currentSectionParts = PartsBySection.First(section => section.Key == currentSection);
+            var currentSectionRootInfo = currentSectionParts.SelectMany(part => part.FindModulesImplementing<SectionInfo>()).First(info => info.isSectionRoot);
+            var newSectionParts = PartsBySection.First(section => section.Key == newSection);
+            var newSectionRootInfo = newSectionParts.SelectMany(part => part.FindModulesImplementing<SectionInfo>()).First(info => info.isSectionRoot);
+            foreach (var sectionData in currentSectionRootInfo.dataContainer.GetAllSectionDatas())
+            {
+                newSectionRootInfo.dataContainer.AddOrUpdateSectionDataForMod(sectionData);
+            }
+            currentSectionRootInfo.isSectionRoot = false;
+            currentSectionRootInfo.dataContainer = new SectionDataContainer();
+            ChangeSectionNameCore(currentSectionParts, newSection);
+            SectionsMerged.Fire(currentSection, newSection);
+        }
+
+
+        private static void RenameSection(string oldSectionName, string newSectionName)
+        {
+            ChangeSectionNameCore(PartsBySection.First(group => group.Key == oldSectionName), newSectionName);
+            SectionRenamed.Fire(oldSectionName, newSectionName);
+        }
+
+        private static void ChangeSectionNameCore(IEnumerable<Part> parts, string newSectionName)
+        {
+            foreach (var part in parts)
+            {
+                var info = part.FindModuleImplementing<SectionInfo>();
+                if (info != null)
+                {
+                    info.section = newSectionName;
+                }
+            }
+        }
+
+        public static readonly EventData<string> NewSectionCreated = new EventData<string>(nameof(NewSectionCreated));
+
+        public static readonly EventData<string, string> SectionRenamed = new EventData<string, string>(nameof(SectionRenamed));
+
+        public static readonly EventData<string, string> SectionsMerged = new EventData<string, string>(nameof(SectionsMerged));
+
+        public static readonly EventData<Part> PartSectionInitialized = new EventData<Part>(nameof(PartSectionInitialized));
+
+        public static IEnumerable<string> SectionNames
+            => CurrentVesselParts.Select(part => part.FindModuleImplementing<SectionInfo>().section).Distinct();
+        public static IEnumerable<IGrouping<string, Part>> PartsBySection
+            => EnsureSectionRootsExist(CurrentVesselParts.GroupBy(part => part.FindModuleImplementing<SectionInfo>()?.section));
+        public static T GetSectionDataForMod<T>(string sectionName)
+            where T : SectionDataBase
+            => PartsBySection.Single(section => section.Key == sectionName).Select(part => part.FindModuleImplementing<SectionInfo>())
+                    .Single(info => info.isSectionRoot).dataContainer.GetSectionData<T>();
+
+        private static IEnumerable<IGrouping<string, Part>> EnsureSectionRootsExist(IEnumerable<IGrouping<string, Part>> sections)
+        {
+            foreach (var section in sections)
+            {
+                if (!section.Any(part => part.FindModuleImplementing<SectionInfo>().isSectionRoot))
+                {
+                    var info = section.First().FindModuleImplementing<SectionInfo>();
+                    info.isSectionRoot = true;
+                    info.InitializeAsNewSection();
+                }
+                else
+                {
+                    // Make sure that there is only one sectionRoot per section, and that the section data is fully initialized
+                    int cnt = section.Count(part => part.FindModuleImplementing<SectionInfo>().isSectionRoot);
+                    bool b = false;
+                    if (cnt > 1)
+                    {
+                        foreach (var p in section.SelectMany(part => part.FindModulesImplementing<SectionInfo>().Where(p => p.isSectionRoot)))
+                        {
+                            if (b)
+                            {
+                                p.isSectionRoot = false;
+                            }
+                            else
+                            {
+                                p.InitializeAsNewSection();
+                                b = true;
+                            }
+                        }
+                    }
+               
+                }
+            }
+            return sections;
+        }
+    }
+}

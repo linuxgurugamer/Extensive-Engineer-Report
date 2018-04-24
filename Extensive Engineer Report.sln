@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		ShipSections.version = ShipSections.version
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipSections", "ShipSections\ShipSections\ShipSections.csproj", "{9C0C93C1-C018-4A3F-89A8-FD677730787C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipSections", "ShipSectionsProj\ShipSections.csproj", "{9C0C93C1-C018-4A3F-89A8-FD677730787C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
