@@ -14,3 +14,10 @@
 
 0.1.2
 	Updated for 1.3.1
+
+0.1.3
+	Reenabled ShipSections window
+	Added buttons to ShipSections window to resection by stage
+	Added button to ShipSections to merge all sections
+	Added support for the ToolbarController
+	Added support for the ClickThroughBlocker

@@ -6,6 +6,7 @@ using UnityEngine;
 using KSP.UI.Screens;
 using static JKorTech.Extensive_Engineer_Report.ConcernUtils;
 using static JKorTech.Extensive_Engineer_Report.KSPExtensions;
+using ToolbarControl_NS;
 
 namespace JKorTech.Extensive_Engineer_Report
 {
@@ -14,11 +15,11 @@ namespace JKorTech.Extensive_Engineer_Report
     {
 
         private const int WindowWidth = 400, WindowHeight = 600;
-        private ApplicationLauncherButton button;
+        //private ApplicationLauncherButton button;
+        ToolbarControl toolbarControl;
+
         private Vector2 scrollPos;
         private static readonly string TestsPassingIconLocation = "ExtensiveEngineerReport/Textures/TestPass";
-        private Texture TestsPassingIcon;
-        private Texture TestsFailIcon;
         private static readonly string TestsFailIconLocation = "ExtensiveEngineerReport/Textures/TestFail";
         private GUIStyle passStyle;
         private GUIStyle failStyle;
@@ -29,60 +30,58 @@ namespace JKorTech.Extensive_Engineer_Report
         {
             DragEnabled = true;
             WindowRect.Set((Screen.width - WindowWidth) / 4, (Screen.height - WindowHeight) / 2, WindowWidth, WindowHeight);
-            LogFormatted_DebugOnly("Setting textures");
-            TestsPassingIcon = GameDatabase.Instance.GetTexture(TestsPassingIconLocation, false);
-            TestsFailIcon = GameDatabase.Instance.GetTexture(TestsFailIconLocation, false);
+
             WindowCaption = "Extensive Engineer Report";
-            if (ApplicationLauncher.Instance != null && ApplicationLauncher.Ready)
-                OnAppLauncherReady();
-            else
-                GameEvents.onGUIApplicationLauncherReady.Add(OnAppLauncherReady);
+
+            OnAppLauncherReady();
+
         }
 
         internal override void Update()
         {
+            Log.Info("Update 1");
             base.Update();
             if (ConcernRunner.Instance == null)
                 return;
             if (ConcernRunner.Instance.TestsPass)
             {
-                if (button != null && TestsPassingIcon != null)
-                    button.SetTexture(TestsPassingIcon);
-                //EditorLogic.fetch.launchBtn.SetColor(Color.green);
+                Log.Info("Update TestsPass");
+                    toolbarControl.SetTexture(TestsPassingIconLocation + "-38", TestsPassingIconLocation + "-24");
                 EditorLogic.fetch.launchBtn.image.color = Color.green;
             }
             else
             {
-                if (button != null && TestsFailIcon != null)
-                    button.SetTexture(TestsFailIcon);
-                //EditorLogic.fetch.launchBtn.SetColor(Color.red);
+                Log.Info("Update TEstsFail");
+                    toolbarControl.SetTexture(TestsFailIconLocation + "-38", TestsFailIconLocation + "-24");
                 EditorLogic.fetch.launchBtn.image.color = Color.red;
             }
+            toolbarControl﻿.UseBlizzy﻿(true);
         }
+
+        internal const string MODID = "EER_NS";
+        internal const string MODNAME = "Extensive Engineer Report";
 
         private void OnAppLauncherReady()
         {
-            if (button != null)
-            {
-                ApplicationLauncher.Instance.RemoveModApplication(button);
-                button = null;
-            }
-            button = ApplicationLauncher.Instance.AddModApplication(
-                () => Visible = true,
-                () => Visible = false,
-                null,
-                null,
-                null,
-                null,
+            toolbarControl = gameObject.AddComponent<ToolbarControl>();
+            toolbarControl.AddToAllToolbars(ToggleButton, ToggleButton,
                 ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH,
-                TestsPassingIcon);
-            
-        }
+                MODID,
+                "eerButton",
+                TestsPassingIconLocation + "-38",
+                TestsPassingIconLocation + "-24",
+                MODNAME
+            );
 
+        }
+        void ToggleButton()
+        {
+            Visible = !Visible;
+        }
         internal override void OnDestroy()
         {
-            ApplicationLauncher.Instance.RemoveModApplication(button);
-            GameEvents.onGUIApplicationLauncherReady.Remove(OnAppLauncherReady);
+            toolbarControl.OnDestroy();
+            Destroy(toolbarControl);
             Visible = false;
         }
 

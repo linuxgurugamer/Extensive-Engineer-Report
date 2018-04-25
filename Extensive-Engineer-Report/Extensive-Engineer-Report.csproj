@@ -57,6 +57,7 @@
     <Compile Include="LabsHaveScientistsAboard.cs" />
     <Compile Include="LandingLegsButNoLights.cs" />
     <Compile Include="HighHeatGenNoRadiators.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="NonResettableExperimentsHaveScientistOrLab.cs" />
     <Compile Include="ProbeCoreHasBackupBattery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="TagModules\TagParachute.cs" />
     <Compile Include="TagModules\TagWeapons.cs" />
     <Compile Include="TagModules\TagWeaponsManager.cs" />
+    <Compile Include="ToolbarRegistration.cs" />
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="UnmannedHasExternalAntenna.cs" />
     <Compile Include="UnmannedHasAdvancedFlightComputer.cs" />
@@ -113,8 +115,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>R:\KSP_1.4.1_dev\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="ClickThroughBlocker">
+      <HintPath>R:\KSP_1.4.1_dev\GameData\ClickThroughBlocker\Plugins\ClickThroughBlocker.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
+    <Reference Include="ToolbarControl">
+      <HintPath>R:\KSP_1.4.1_dev\GameData\001_ToolbarControl\Plugins\ToolbarControl.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>R:\KSP_1.4.1_dev\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>

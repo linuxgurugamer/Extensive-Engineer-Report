@@ -8,6 +8,8 @@ License: The MIT License (MIT)
 using System;
 using UnityEngine;
 
+using ClickThroughFix;
+
 namespace KSPPluginFramework
 {
 
@@ -97,7 +99,7 @@ namespace KSPPluginFramework
         /// </summary>
         internal GUIStyle WindowStyle = null;
         /// <summary>
-        /// Layout Options for the GUILayout.Window function
+        /// Layout Options for the ClickThruBlocker.GUILayoutWindow function
         /// </summary>
         internal GUILayoutOption[] WindowOptions = null;
 
@@ -153,11 +155,11 @@ namespace KSPPluginFramework
             //Are we using a custom style of the skin style for the window
             if (WindowStyle == null)
             {
-                WindowRect = GUILayout.Window(WindowID, WindowRect, DrawWindowInternal, WindowCaption, WindowOptions);
+                WindowRect = ClickThruBlocker.GUILayoutWindow(WindowID, WindowRect, DrawWindowInternal, WindowCaption, WindowOptions);
             }
             else
             {
-                WindowRect = GUILayout.Window(WindowID, WindowRect, DrawWindowInternal, WindowCaption, WindowStyle, WindowOptions);
+                WindowRect = ClickThruBlocker.GUILayoutWindow(WindowID, WindowRect, DrawWindowInternal, WindowCaption, WindowStyle, WindowOptions);
             }
 
             //Draw the tooltip of its there to be drawn

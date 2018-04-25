@@ -3,6 +3,8 @@ using System.Linq;
 using UnityEngine;
 using KSP.UI.Screens;
 
+using ToolbarControl_NS;
+
 namespace JKorTech.ShipSections
 {
     [KSPAddon(KSPAddon.Startup.EditorAny, false)]
@@ -158,7 +160,7 @@ namespace JKorTech.ShipSections
             DragEnabled = true;
 
 
-            WindowRect.Set((Screen.width - WindowWidth) / 4, (Screen.height - WindowHeight) / 2, WindowWidth, WindowHeight);
+            WindowRect.Set((Screen.width - WindowWidth) *0.75f, (Screen.height - WindowHeight) / 2, WindowWidth, WindowHeight);
             WindowCaption = nameof(ShipSections);
             if (ApplicationLauncher.Instance != null && ApplicationLauncher.Ready)
                 OnAppLauncherReady();
@@ -166,31 +168,32 @@ namespace JKorTech.ShipSections
                 GameEvents.onGUIApplicationLauncherReady.Add(OnAppLauncherReady);
         }
 
-        private ApplicationLauncherButton button;
+        //private ApplicationLauncherButton button;
+        ToolbarControl toolbarControl;
         private Vector2 scrollPos;
-
+        internal const string MODID = "ShipSections_NS";
+        internal const string MODNAME = "Ship Sections";
         private void OnAppLauncherReady()
         {
-            if (button != null)
-            {
-                ApplicationLauncher.Instance.RemoveModApplication(button);
-                button = null;
-            }
-            button = ApplicationLauncher.Instance.AddModApplication(
-                () => Visible = true,
-                () => Visible = false,
-                null,
-                null,
-                null,
-                null,
+            toolbarControl = gameObject.AddComponent<ToolbarControl>();
+            toolbarControl.AddToAllToolbars(ToggleButton, ToggleButton,
                 ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH,
-                GameDatabase.Instance.GetTexture(AppLauncherIconLocation, false));
-        }
+                MODID,
+                "shipSectionsButton",
+                AppLauncherIconLocation + "-38",
+                AppLauncherIconLocation + "-24",
+                MODNAME
+            );
 
+        }
+        void ToggleButton()
+        {
+            Visible = !Visible;
+        }
         internal override void OnDestroy()
         {
-            ApplicationLauncher.Instance.RemoveModApplication(button);
-            GameEvents.onGUIApplicationLauncherReady.Remove(OnAppLauncherReady);
+            toolbarControl.OnDestroy();
+            Destroy(toolbarControl﻿﻿);
 
         }
     }
