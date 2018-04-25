@@ -28,7 +28,7 @@
 
 # 2:PROJNAME, PROJFILE, VERSIONFILE, PLUGINSFOLDER
 2:ShipSectionsProj,ShipSectionsProj/ShipSections.csproj,ShipSections.version,GameData/ExtensiveEngineerReport/Plugins
-2:Extensive-Engineer-Report,Extensive-Engineer-Report/Extensive-Engineer-Report.csproj,ExtensiveEngineerReport.version,GameData/ExtensiveEngineerReport/Plugins
+2:Extensive-Engineer-Report,Extensive-Engineer-Report/Extensive-Engineer-Report.csproj,ShipSections.version,GameData/ExtensiveEngineerReport/Plugins
 
 # 3:SOURCEFILE, DESTDIR
 3:ExtensiveEngineerReport.version,GameData/ExtensiveEngineerReport
