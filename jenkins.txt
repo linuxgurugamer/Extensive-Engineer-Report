@@ -24,7 +24,7 @@
 # 0:1.3
 
 # 1:GAMEDIR, VERSIONFILE [, GITHUBREPO ]
-1:ExtensiveEngineerReport, ExtensiveEngineerReport.version
+1:ExtensiveEngineerReport, ExtensiveEngineerReport.version, Extensive-Engineer-Report
 
 # 2:PROJNAME, PROJFILE, VERSIONFILE, PLUGINSFOLDER
 2:ShipSectionsProj,ShipSectionsProj/ShipSections.csproj,ShipSections.version,GameData/ExtensiveEngineerReport/Plugins
