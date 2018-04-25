@@ -25,7 +25,7 @@ namespace JKorTech.Extensive_Engineer_Report
         private GUIStyle failStyle;
         private GUIStyle descriptionStyle;
         private bool stylesInit;
-        
+
         internal override void Start()
         {
             DragEnabled = true;
@@ -39,23 +39,21 @@ namespace JKorTech.Extensive_Engineer_Report
 
         internal override void Update()
         {
-            Log.Info("Update 1");
             base.Update();
             if (ConcernRunner.Instance == null)
                 return;
             if (ConcernRunner.Instance.TestsPass)
             {
                 Log.Info("Update TestsPass");
-                    toolbarControl.SetTexture(TestsPassingIconLocation + "-38", TestsPassingIconLocation + "-24");
+                toolbarControl.SetTexture(TestsPassingIconLocation + "-38", TestsPassingIconLocation + "-24");
                 EditorLogic.fetch.launchBtn.image.color = Color.green;
             }
             else
             {
                 Log.Info("Update TEstsFail");
-                    toolbarControl.SetTexture(TestsFailIconLocation + "-38", TestsFailIconLocation + "-24");
+                toolbarControl.SetTexture(TestsFailIconLocation + "-38", TestsFailIconLocation + "-24");
                 EditorLogic.fetch.launchBtn.image.color = Color.red;
             }
-            toolbarControl﻿.UseBlizzy﻿(true);
         }
 
         internal const string MODID = "EER_NS";
@@ -109,11 +107,11 @@ namespace JKorTech.Extensive_Engineer_Report
                 settings.notice = GUILayout.Toggle(settings.notice, "Notice", KSPPluginFramework.SkinsLibrary.CurrentSkin.button);
                 if (old != settings.notice) ConcernRunner.Instance.RunTests();
             }
-            
+
             using (new GuiLayout(GuiLayout.Method.ScrollView, ref scrollPos))
             {
                 GUILayout.Label("Ship-Wide Tests");
-                
+
                 // Needed to add check for the count since apparently if a dictinary is empty, accessing it will cause an error
                 if (ConcernRunner.Instance.ShipConcerns.Count > 0)
                     foreach (var test in ConcernLoader.ShipDesignConcerns.Where(test => InCorrectFacility(test) && test.IsApplicable()))
